@@ -44,14 +44,14 @@ public class StartGUI extends javax.swing.JFrame {
             System.out.println(item.toString());
         }
         
-        oval.setAnchor(new Point(40, 40));
+       /* oval.setAnchor(new Point(40, 40));
         System.out.println(oval.toString());
         
         oval.revert();
         System.out.println(oval.toString());
         
         oval.setColor(Color.WHITE);
-        System.out.println(oval.toString());
+        System.out.println(oval.toString()); */
     }
 
     /**

@@ -29,4 +29,8 @@ public class Drawing {
     public void removeItem(DrawingItem item) {
         items.remove(item);
     }
+    
+     public void paintUsing(IPaintable paintable) {
+        
+    }
 }

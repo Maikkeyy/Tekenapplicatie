@@ -50,4 +50,8 @@ public abstract class DrawingItem {
             previousState = previousState.previousState;
         }
     }
+    
+    public void paintUsing(IPaintable paintable) {
+        
+    }
 }
