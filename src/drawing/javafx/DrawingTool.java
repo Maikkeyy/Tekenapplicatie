@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import drawing.domain.*;
+import drawing.domain.Color;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -23,11 +24,13 @@ import javafx.scene.canvas.GraphicsContext;
 public class DrawingTool extends Application {
     private Drawing drawing; 
     private Canvas drawingCanvas;
-    private GraphicsContext gc = this.drawingCanvas.getGraphicsContext2D();
-    private IPaintable paintable;
+    private GraphicsContext gc;
+    private IPaintable paintable; 
     
     public DrawingTool() {
         this.drawing = new Drawing();
+        this.drawingCanvas = new Canvas(250, 250);
+        this.gc = drawingCanvas.getGraphicsContext2D();
         this.paintable = new JavaFXPaintable(gc);
         this.drawing.paintUsing(paintable);  
     }
@@ -37,10 +40,12 @@ public class DrawingTool extends Application {
   
         StackPane root = new StackPane();
         
-        Scene scene = new Scene(root, 300, 250);
+        Scene scene = new Scene(root, 300, 300);
         
-        primaryStage.setTitle("Hello World!");
+        primaryStage.setTitle("Tekenapplicatie!");
         primaryStage.setScene(scene);
+        draw();
+        root.getChildren().add(drawingCanvas);
         primaryStage.show();
     }
 
@@ -52,7 +57,8 @@ public class DrawingTool extends Application {
     }
     
     public void draw() {
-        
+        Oval oval = new Oval(Color.RED, new Point(50, 50), 40, 80, 2);
+        paintable.paint(oval);
     }
     
 }
