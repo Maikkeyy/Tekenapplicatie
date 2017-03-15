@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package drawing.domain;
 
 import java.io.File;
@@ -22,7 +17,7 @@ public class DatabaseMediator implements PersistencyMediator {
     private Properties props;
     private Connection con;
     
-    public DatabaseMediator(String connString, String username, String password) throws FileNotFoundException, IOException { // Uitzoeken hoe het zit met deze exceptions
+    public DatabaseMediator(String connString, String username, String password) throws FileNotFoundException, IOException { 
         props = new Properties();
         props.setProperty("url", connString);
         props.setProperty("username", username);
@@ -56,6 +51,8 @@ public class DatabaseMediator implements PersistencyMediator {
                                         "LEFT JOIN image i ON i.Id = di.Id\n" +
                                         "LEFT JOIN oval o ON o.Id = di.Id\n" +
                                         "LEFT JOIN paintedtext pt ON pt.Id = di.Id\n" +
+                                        "LEFT JOIN polygon p ON p.Id = di.Id\n" + 
+                                        "LEFT JOIN polygon_points pp ON pp.Id = p.Id\n" +
                                         "WHERE Drawing_Id = ?");
             
             stmt2.setInt(1, Id);
@@ -71,14 +68,18 @@ public class DatabaseMediator implements PersistencyMediator {
                         Image image = mapImage(rs);
                         drawing.addItem(image);
                     }
-                    if("paintedtext".equals(rs.getString("type"))) {
+                    if("text".equals(rs.getString("type"))) {
                         PaintedText text = mapText(rs);
                         drawing.addItem(text);
+                    }
+                    if("polygon".equals(rs.getString("type"))) {
+                        Polygon polygon = mapPolygon(rs);
+                        drawing.addItem(polygon);
                     }
 
                 }
             } catch(SQLException ex) {
-
+                 System.out.println(ex.getMessage());
             }
      
         return drawing;
@@ -118,6 +119,37 @@ public class DatabaseMediator implements PersistencyMediator {
         
         return text;
     }
+    
+    private Polygon mapPolygon(ResultSet rs) throws SQLException {
+        Polygon polygon = new Polygon();
+        polygon.setColor(Color.valueOf(rs.getString("Color")));
+        polygon.setWeight(rs.getDouble("p.Weight"));
+        
+        int polygonId = rs.getInt("Id");
+        
+        PreparedStatement preStmt = con.prepareStatement("SELECT COUNT(*) c FROM polygon_points Where Id = ?");
+        preStmt.setInt(1, polygonId);
+        ResultSet rs2 = preStmt.executeQuery();
+        rs2.next();
+        int count = rs2.getInt(1);
+        
+        preStmt = con.prepareStatement("SELECT * FROM polygon_points WHERE Id = ?");
+        preStmt.setInt(1, polygonId);
+        rs2 = preStmt.executeQuery();
+        
+        Point[] vertices = new Point[count];
+        int i = 0;
+        
+        while(rs2.next()) {
+            vertices[i] = new Point(rs2.getDouble("x"), rs2.getDouble("y"));
+            i++;
+        }
+        
+        polygon.setVertices(vertices);
+               
+        return polygon;
+    }
+    
     
     @Override
     public Boolean save(Drawing drawing) {
@@ -269,8 +301,17 @@ public class DatabaseMediator implements PersistencyMediator {
         PreparedStatement preStmt = con.prepareStatement(sql);
         
         preStmt.setInt(1, itemId);
-        preStmt.setInt(3, (int) polygon.getWeight());
+        preStmt.setInt(2, (int) polygon.getWeight());
         preStmt.executeUpdate();
+        
+        String Sql = "INSERT INTO polygon_points (Id, x, y) VALUES (?,?,?)";
+        preStmt = con.prepareStatement(Sql);
+        for(Point p : polygon.getVertices()) {
+            preStmt.setInt(1, itemId);
+            preStmt.setDouble(2, p.getX());
+            preStmt.setDouble(3, p.getY());
+            preStmt.executeUpdate();
+        }
     }
 
     @Override
