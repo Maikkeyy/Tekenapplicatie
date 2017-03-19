@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="drawing.javafx.DrawingTool">
+  <children>
+    <MenuBar layoutX="0.0" layoutY="0.0" prefHeight="26.0" prefWidth="600.0">
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+            <MenuItem mnemonicParsing="false" text="New" fx:id="New" />
+            <MenuItem mnemonicParsing="false" text="Load" />
+            <MenuItem mnemonicParsing="false" text="Save" />
+            <MenuItem mnemonicParsing="false" text="Exit" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+          <items>
+            <MenuItem mnemonicParsing="false" text="Add item.." />
+            <MenuItem mnemonicParsing="false" text="Delete item.." />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="Instructions" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <Label fx:id="label" layoutX="128.0" layoutY="77.0" style="" text="Label" textFill="#992500" />
+    <Canvas fx:id="drawingCanvas" height="250.0" layoutX="189.0" layoutY="112.0" style="" width="250.0" />
+  </children>
+</AnchorPane>
